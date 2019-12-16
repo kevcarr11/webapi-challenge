@@ -1,12 +1,16 @@
 const express = require('express')
 const helmet = require("helmet")
-
+const logger = require("./middleware/logger")
+const projectRouter = require("./routers/project")
 
 const server = express()
 
 
 server.use(helmet())
+server.use(logger())
 server.use(express.json())
+
+server.use("/api/projects", projectRouter)
 
 server.get("/", (req, res) => {
   res.json({
