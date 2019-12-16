@@ -18,6 +18,16 @@ function validateProjectId() {
   } 
 }
 
+function validateProjectData() {
+  return (req, res, next) => {
+    if (!req.body.name || !req.body.description) {
+      return res.status(400).json({ message: "Please provide name and description for project" })
+    }
+    next()
+  }
+}
+
 module.exports = {
   validateProjectId,
+  validateProjectData,
 }
