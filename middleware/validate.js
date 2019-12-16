@@ -15,7 +15,7 @@ function validateProjectId() {
         console.log(error)
         next(error)
       })
-  } 
+  }
 }
 
 function validateProjectData() {
@@ -27,7 +27,17 @@ function validateProjectData() {
   }
 }
 
+function validateActionData() {
+  return (req, res, next) => {
+    if (!req.body.description || !req.body.notes) {
+      return res.status(400).json({ message: "Please provide name and description for project" })
+    }
+    next()
+  }
+}
+
 module.exports = {
   validateProjectId,
   validateProjectData,
+  validateActionData,
 }
