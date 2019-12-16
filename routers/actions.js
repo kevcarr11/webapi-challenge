@@ -1,15 +1,20 @@
 const express = require("express")
 const actions = require("../data/helpers/actionModel")
+const projects = require("../data/helpers/projectModel")
 const { validateActionData, validateProjectId } = require("../middleware/validate")
 
 const router = express.Router({
   mergeParams: true,
 })
 
-router.get("/", (req, res) => {
-  actions.get()
+router.get("/", validateProjectId(), (req, res) => {
+  projects.getProjectActions(req.params.id)
     .then(actions => {
-      res.json(actions)
+      if (actions.length > 0) {
+        res.json(actions)
+      } else {
+        res.json({ message: "There are currently no actions for this project" })
+      }
     })
     .catch(error => {
       next(error)
@@ -32,16 +37,17 @@ router.get("/:actionId", (req, res) => {
     })
 })
 
-router.post("/", async (req, res, next) => {
+router.post("/", validateProjectId(), async (req, res, next) => {
   if (!req.body.description || !req.body.notes) {
     return res.status(400).json({
       message: "Actions needs a description and notes value"
     })
   }
+ 
   const payload = {
     description: req.body.description,
     notes: req.body.notes,
-    project_id: req.params.id
+    project_id: req.project.id
   }
 
   try {
@@ -53,9 +59,13 @@ router.post("/", async (req, res, next) => {
 })
 
 router.put("/:actionId", validateActionData(), validateProjectId(), (req, res) => {
-  actions.update(req.project.id, req.body)
+  actions.update(req.params.actionId, req.body)
   .then(action => {
-    res.json(action)
+    if (action !== null) {
+      res.json(action)
+    } else {
+      res.json({ message: "Action not found" })
+    }
   })
   .catch(error => {
     next(error)

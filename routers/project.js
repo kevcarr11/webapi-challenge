@@ -17,16 +17,6 @@ router.get("/", (req, res) => {
   })
 })
 
-router.get("/:id/actions", validateProjectId(), (req, res) => {
-  actions.getProjectActions(req.project.id)
-    .then(actions => {
-      res.json(actions)
-    })
-    .catch(error => {
-      next(error)
-    })
-})
-
 router.get("/:id", validateProjectId(), (req, res) => {
   res.json(req.project)
 })
