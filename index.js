@@ -12,3 +12,15 @@ I need this code, just don't know where, perhaps should make some middleware, do
 
 Go code!
 */
+
+const server = require("./server.js")
+
+
+const host = process.env.HOST || "0.0.0.0"
+const port = process.env.PORT || 8080
+
+
+
+server.listen(port, host, () => {
+  console.log(`Server Running on http://${host}:${port}`)
+})
